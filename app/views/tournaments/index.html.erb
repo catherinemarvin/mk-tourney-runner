@@ -1,0 +1,11 @@
+<h1>Tournaments#index</h1>
+
+<ul>
+    <% @tournaments.each do |tournament| %>
+        <li>
+            <%= link_to tournament.title, tournament %>
+        </li>
+    <% end %>
+</ul>
+
+<%= link_to "New", new_tournament_url %>

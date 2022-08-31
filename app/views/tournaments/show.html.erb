@@ -1,0 +1,27 @@
+<h1><%= @tournament.title %></h1>
+
+<h1>Players</h1>
+<ul>
+<% @tournament.players.each do |player| %>
+    <li>
+        <%= player.name %>
+    </li>
+
+<% end %>
+</ul>
+
+<h1>Rounds</h1>
+<ul>
+<% @tournament.rounds.each do |round| %>
+    <li><%= round.position %></li>
+    <ul>
+        <% round.players.each do |player| %>
+            <li><%= player.name %></li>
+        <% end %>
+    </ul>
+<% end %>
+</ul>
+
+
+
+<%= link_to "Edit", edit_tournament_url(@tournament) %>
