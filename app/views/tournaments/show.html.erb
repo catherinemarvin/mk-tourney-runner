@@ -13,12 +13,14 @@
 <h1>Rounds</h1>
 <ul>
 <% @tournament.rounds.each do |round| %>
-    <li><%= round.position %></li>
+    <li>Round: <%= round.position %></li>
     <ul>
         <% round.players.each do |player| %>
             <li><%= player.name %></li>
         <% end %>
+        <li>Next Round: <%= round.next_round %>
     </ul>
+
 <% end %>
 </ul>
 
