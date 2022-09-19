@@ -22,6 +22,23 @@ RSpec.describe Tournament, type: :model do
     end
   end
 
+  context "with 4 people" do
+    before(:each) do
+      players = [ Player.new(name: "A"), Player.new(name: "B"), Player.new(name: "C") ]
+      @tournament.players = players
+      @tournament.generate_rounds
+    end
+
+    it "has a single round" do
+      expect(@tournament.rounds.length).to eq(1)
+    end
+
+    it "gives each player the same round" do
+      round = @tournament.rounds.first
+      expect(round.players).to eq(@tournament.players)
+    end
+  end
+
   context "with 8 people" do
     before(:each) do
       players = [ Player.new(name: "A"), 

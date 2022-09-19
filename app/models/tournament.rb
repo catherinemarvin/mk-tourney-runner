@@ -10,7 +10,7 @@ class Tournament < ApplicationRecord
 
         num_players = players.length
 
-        if num_players < 4
+        if num_players <= 4
             round = rounds.build()
             round.players = players
             return

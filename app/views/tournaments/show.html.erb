@@ -18,7 +18,11 @@
         <% round.players.each do |player| %>
             <li><%= player.name %></li>
         <% end %>
-        <li>Next Round: <%= round.next_round %>
+        <ul> Next Rounds:
+            <% round.next_rounds.each do |round| %>
+                <li><%= round.position %></li>
+            <% end %>
+        </ul>
     </ul>
 
 <% end %>
