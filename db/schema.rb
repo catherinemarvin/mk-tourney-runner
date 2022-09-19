@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_23_052528) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_03_003311) do
   create_table "players", force: :cascade do |t|
     t.string "name"
     t.integer "tournament_id"
@@ -26,13 +26,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_052528) do
     t.index ["round_id"], name: "index_players_rounds_on_round_id"
   end
 
+  create_table "round_edges", force: :cascade do |t|
+    t.integer "start_id"
+    t.integer "end_id"
+    t.index ["end_id"], name: "index_round_edges_on_end_id"
+    t.index ["start_id"], name: "index_round_edges_on_start_id"
+  end
+
   create_table "rounds", force: :cascade do |t|
     t.integer "position"
     t.integer "next_round_id"
     t.integer "tournament_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["next_round_id"], name: "index_rounds_on_next_round_id"
     t.index ["tournament_id"], name: "index_rounds_on_tournament_id"
   end
 
@@ -44,6 +50,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_23_052528) do
   end
 
   add_foreign_key "players", "tournaments"
+  add_foreign_key "round_edges", "rounds", column: "end_id"
+  add_foreign_key "round_edges", "rounds", column: "start_id"
   add_foreign_key "rounds", "rounds", column: "next_round_id"
   add_foreign_key "rounds", "tournaments"
 end
