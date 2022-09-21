@@ -38,14 +38,20 @@ class Tournament < ApplicationRecord
                 round.next_rounds << final_round
             end
             final_round.position = round_position
-            # TODO(catherine): Add functionality to enable multiple previous/next rounds
-            # final_round = rounds.build()
-            # extra_round = rounds.build(next_round = final_round)
-            # players.each_slice(4) do |player_chunk|
-            #     if players.length == 4:
-            #         round = rounds.build(players = player_chunk, next_round = extra_round)
-            #     end
-            # end
+        else
+            final_round = rounds.build()
+            extra_round = rounds.build(next_rounds: [final_round])
+            players.each_slice(4) do |player_chunk|
+                if player_chunk.length == 4
+                    round = rounds.build(players: player_chunk, next_rounds:[extra_round, final_round], position: round_position)
+                    round_position += 1
+                else
+                    extra_round.players = player_chunk
+                    extra_round.position = round_position
+                    round_position += 1
+                end
+            end
+            final_round.position = round_position
         end
     end
 end

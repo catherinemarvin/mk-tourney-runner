@@ -46,6 +46,49 @@ RSpec.describe Tournament, type: :model do
     end
   end
 
+  context "with 6 people" do
+    before(:each) do
+      generate_players(6)
+      @tournament.generate_rounds
+      @tournament.save
+    end
+
+    it "has three rounds" do
+      expect(@tournament.rounds.length).to eq(3)
+    end
+
+    it "has a first round with 4 players and two next rounds" do
+      rounds = @tournament.rounds.filter do |round|
+        round.previous_rounds.empty?
+      end
+
+      expect(rounds.length).to eq(1)
+      round = rounds[0]
+      expect(round.players.length).to eq(4)
+      expect(round.next_rounds.length).to eq(2)
+    end
+
+    it "has a final round with two previous rounds" do
+      rounds = @tournament.rounds.filter do |round|
+        round.next_rounds.empty?
+      end
+
+      expect(rounds.length).to eq(1)
+      round = rounds[0]
+
+      expect(round.previous_rounds.length).to eq(2)
+    end
+
+    it "has an intermediate round connected to the start and end round" do
+      rounds = @tournament.rounds.filter do |round|
+        round.previous_rounds.any? and round.next_rounds.any?
+      end
+      expect(rounds.length).to eq(1)
+      round = rounds[0]
+      expect(round.players.length).to eq(2)
+    end
+  end
+
   context "with 8 people" do
     before(:each) do
       generate_players(8)
@@ -59,7 +102,7 @@ RSpec.describe Tournament, type: :model do
 
     it "has two starting rounds with non-overlapping players" do
       starting_rounds = @tournament.rounds.filter do |round|
-        round.previous_rounds.length == 0
+        round.previous_rounds.empty?
       end
       players = starting_rounds.flatten.flat_map { |round| round.players }
 
