@@ -1,14 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe Tournament, type: :model do
+
+  # Generates n number of players
+  def generate_players(n)
+    (1..n).each do |x|
+      @tournament.players.build(name: x.to_s)
+    end
+  end
+
   before(:each) do
     @tournament = Tournament.new
   end
 
   context "with 3 people" do
     before(:each) do
-      players = [ Player.new(name: "A"), Player.new(name: "B"), Player.new(name: "C") ]
-      @tournament.players = players
+      generate_players(3)
       @tournament.generate_rounds
     end
 
@@ -24,8 +31,7 @@ RSpec.describe Tournament, type: :model do
 
   context "with 4 people" do
     before(:each) do
-      players = [ Player.new(name: "A"), Player.new(name: "B"), Player.new(name: "C") ]
-      @tournament.players = players
+      generate_players(4)
       @tournament.generate_rounds
       @tournament.save
     end
@@ -42,16 +48,7 @@ RSpec.describe Tournament, type: :model do
 
   context "with 8 people" do
     before(:each) do
-      players = [ Player.new(name: "A"), 
-        Player.new(name:"B"),
-        Player.new(name:"C"),
-        Player.new(name:"D"),
-        Player.new(name:"E"),
-        Player.new(name:"F"),
-        Player.new(name:"G"),
-        Player.new(name:"H"),
-      ]
-      @tournament.players = players
+      generate_players(8)
       @tournament.generate_rounds
       @tournament.save
     end
