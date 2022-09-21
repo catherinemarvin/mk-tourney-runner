@@ -27,6 +27,7 @@ RSpec.describe Tournament, type: :model do
       players = [ Player.new(name: "A"), Player.new(name: "B"), Player.new(name: "C") ]
       @tournament.players = players
       @tournament.generate_rounds
+      @tournament.save
     end
 
     it "has a single round" do
@@ -52,6 +53,7 @@ RSpec.describe Tournament, type: :model do
       ]
       @tournament.players = players
       @tournament.generate_rounds
+      @tournament.save
     end
 
     it "has three rounds" do
