@@ -135,7 +135,7 @@ function drawNextRoundArrows(round) {
             draw.line(
                     sourceBBox.x + sourceRect.width(), 
                     sourceBBox.y + (sourceRect.height() / 2),
-                    destBBox.x,
+                    destBBox.x - markerWidth * 4,
                     sourceBBox.y + (sourceRect.height() / 2))
                 .stroke({ color: 'black', width: 4})
                 .marker('end', marker);
@@ -145,7 +145,7 @@ function drawNextRoundArrows(round) {
                 [
                     [sourceBBox.x + sourceBBox.width, sourceBBox.y + 4],
                     [destBBox.x + (destBBox.width / 2), sourceBBox.y + 4],
-                    [destBBox.x + (destBBox.width / 2), destBBox.y]
+                    [destBBox.x + (destBBox.width / 2), destBBox.y - markerWidth * 4]
                 ])
                 .fill('none')
                 .stroke({ color: 'black', width: 4 })
