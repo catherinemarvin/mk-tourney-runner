@@ -6,6 +6,7 @@ class TournamentsController < ApplicationController
   def show
     @tournament = Tournament.find(params[:id])
 
+    # TODO(catherine): Currently we assume there's only one level of intermediate rounds.
     @rounds_json = Jbuilder.encode do |json|
       json.starting_rounds @tournament.starting_rounds do |r|
         json.index r.position
@@ -21,7 +22,10 @@ class TournamentsController < ApplicationController
           json.name p.name
         end
       end
-      json.final_round @tournament.final_round.position
+      json.final_round do 
+        json.index @tournament.final_round.position
+        json.players @tournament.final_round.players, :id, :name
+      end
     end
   end
 
