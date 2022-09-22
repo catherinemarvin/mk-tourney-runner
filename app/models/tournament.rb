@@ -54,4 +54,16 @@ class Tournament < ApplicationRecord
             final_round.position = round_position
         end
     end
+
+    def starting_rounds
+        rounds.filter { |round| round.previous_rounds.empty? }
+    end
+
+    def final_round
+        rounds.first { |round| round.next_rounds.empty? }
+    end
+
+    def intermediate_rounds
+        rounds.filter { |round| round.previous_rounds.any? and round.next_rounds.any? }
+    end
 end

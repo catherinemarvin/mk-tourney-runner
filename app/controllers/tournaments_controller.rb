@@ -5,6 +5,24 @@ class TournamentsController < ApplicationController
 
   def show
     @tournament = Tournament.find(params[:id])
+
+    @rounds_json = Jbuilder.encode do |json|
+      json.starting_rounds @tournament.starting_rounds do |r|
+        json.index r.position
+        json.players r.players do |p|
+          json.id p.id
+          json.name p.name
+        end
+      end
+      json.intermediate_rounds @tournament.intermediate_rounds do |r|
+        json.index r.position
+        json.players r.players do |p|
+          json.id p.id
+          json.name p.name
+        end
+      end
+      json.final_round @tournament.final_round.position
+    end
   end
 
   def new

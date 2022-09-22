@@ -1,3 +1,6 @@
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js" integrity="sha512-I+rKw3hArzZIHzrkdELbKqrXfkSvw/h0lW/GgB8FThaBVz2e5ZUlSW8kY8v3q6wq37eybIwyufkEZxe4qSlGcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <h1><%= @tournament.title %></h1>
 
 <h1>Players</h1>
@@ -28,6 +31,56 @@
 <% end %>
 </ul>
 
-
-
 <%= link_to "Edit", edit_tournament_url(@tournament) %>
+
+<script>
+var rounds = <%== @rounds_json %>;
+
+// key: int value: SVG rect
+var roundPositionToSVG = {};
+
+// height of round
+let roundHeight = 100;
+// vertical padding between rounds
+let heightPadding = 20;
+
+// width of round
+let roundWidth = 100;
+// horizontal padding between rounds
+let widthPadding = 20;
+
+
+var draw = SVG().addTo('body').size(3 * (roundWidth + widthPadding), rounds.starting_rounds.length * (roundHeight + heightPadding));
+
+
+for (var r of rounds.starting_rounds) {
+    var dy = 0;
+    var rect = draw.rect(roundHeight,roundWidth).move(0, dy).attr({ fill: '#f06'})
+    roundPositionToSVG[r.index] = rect;
+    drawPlayers(rect, r.players);
+    dy += roundHeight + heightPadding;
+}
+
+for (var r of rounds.intermediate_rounds) {
+    var dy = 0;
+    var rect = draw.rect(roundHeight,roundWidth).move(roundWidth + widthPadding, dy).attr({ fill: 'red' });
+    roundPositionToSVG[r.index] = rect;
+    drawPlayers(rect, r.players);
+    dy += roundHeight + heightPadding;
+}
+
+var finalRound = draw.rect(roundHeight, roundWidth).move(2 * (roundWidth + widthPadding), 0).attr({ fill: 'red' });
+roundPositionToSVG[r.index] = finalRound;
+
+
+// Round: SVG object
+// Players: array of names
+function drawPlayers(round, players) {
+    var dy = 0;
+    for (var p of players) {
+        draw.text(p.name).move(round.x(),dy).font({ fill: '#000' });
+        dy += 20;
+    }
+}
+
+</script>
