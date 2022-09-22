@@ -39,6 +39,10 @@ var rounds = <%== @rounds_json %>;
 // key: int value: SVG rect
 var roundPositionToSVG = {};
 
+// key: int value: int describing the level (0, 1, or 2)
+var roundPositionToLevel = {};
+initializeRoundPositionToLevel();
+
 // height of round
 let roundHeight = 100;
 // vertical padding between rounds
@@ -62,6 +66,22 @@ drawLevel(startingContainer, rounds.starting_rounds);
 drawLevel(intermediateContainer, rounds.intermediate_rounds);
 drawLevel(finalContainer, [rounds.final_round]);
 
+for (var r of rounds.starting_rounds) {
+    drawNextRoundArrows(r);
+}
+for (var r of rounds.intermediate_rounds) {
+    drawNextRoundArrows(r);
+}
+
+function initializeRoundPositionToLevel() {
+    for (var round of rounds.starting_rounds) {
+        roundPositionToLevel[round.index] = 0;
+    }
+    for (var round of rounds.intermediate_rounds) {
+        roundPositionToLevel[round.index] = 1;
+    }
+    roundPositionToLevel[rounds.final_round.index] = 2;
+}
 
 // container: SVG container, rounds: array of objects
 function drawLevel(container, rounds) {
@@ -84,6 +104,34 @@ function drawPlayers(container, players) {
         container.text(p.name).move(0,dy).font({ fill: '#000' });
         dy += 20;
     }
+}
+
+// round: object    
+function drawNextRoundArrows(round) {
+    var sourceLevel = roundPositionToLevel[round.index];
+    var sourceRect = roundPositionToSVG[round.index];
+    var sourceBBox = sourceRect.rbox(draw);
+
+    for (var destinationIndex of round.next_round_positions) {
+        var destinationRect = roundPositionToSVG[destinationIndex];
+        var destinationLevel = roundPositionToLevel[destinationIndex];
+        var destBBox = destinationRect.rbox(draw);
+
+        // If directly adjacent, draw an arrow from middle
+        if (destinationLevel - sourceLevel == 1) {
+            draw.line(
+                sourceBBox.x + sourceRect.width(), 
+                sourceBBox.y + (sourceRect.height() / 2),
+                destBBox.x,
+                sourceBBox.y + (sourceRect.height() / 2))
+            .stroke({ color: 'black', width: 10});
+        } else if (destinationLevel - sourceLevel > 1) {
+            // Otherwise draw arrow along the top
+        } else {
+            console.log("something went wrong");
+        }
+    }
+
 }
 
 </script>

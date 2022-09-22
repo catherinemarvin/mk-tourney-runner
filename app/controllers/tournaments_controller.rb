@@ -10,21 +10,18 @@ class TournamentsController < ApplicationController
     @rounds_json = Jbuilder.encode do |json|
       json.starting_rounds @tournament.starting_rounds do |r|
         json.index r.position
-        json.players r.players do |p|
-          json.id p.id
-          json.name p.name
-        end
+        json.players r.players, :id, :name
+        json.next_round_positions r.next_rounds.map { |r| r.position }
       end
       json.intermediate_rounds @tournament.intermediate_rounds do |r|
         json.index r.position
-        json.players r.players do |p|
-          json.id p.id
-          json.name p.name
-        end
+        json.players r.players, :id, :name
+        json.next_round_positions r.next_rounds.map { |r| r.position }
       end
       json.final_round do 
         json.index @tournament.final_round.position
         json.players @tournament.final_round.players, :id, :name
+        json.next_round_positions @tournament.final_round.next_rounds.map { |r| r.position }
       end
     end
   end
