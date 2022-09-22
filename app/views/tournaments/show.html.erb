@@ -51,12 +51,25 @@ let heightPadding = 20;
 // width of round
 let roundWidth = 100;
 // horizontal padding between rounds
-let widthPadding = 20;
+let widthPadding = 40;
 
 // how much to lower each successive level
 let levelLowerAmount = 50;
 
+// height of marker
+let markerHeight = 4;
+// width of marker
+let markerWidth = 4;
+
 var draw = SVG().addTo('body').size(3 * (roundWidth + widthPadding), 3 * (roundHeight + heightPadding + levelLowerAmount));
+
+var marker = draw.marker(markerWidth, markerHeight, function (add) {
+    add.polygon([
+        [0, 0],
+        [markerWidth, markerHeight / 2],
+        [0, markerHeight]
+    ])
+}).ref(0, markerHeight / 2);
 
 var startingContainer = draw.nested().move(0,0);
 var intermediateContainer = draw.nested().move(roundWidth + widthPadding, levelLowerAmount);
@@ -120,13 +133,23 @@ function drawNextRoundArrows(round) {
         // If directly adjacent, draw an arrow from middle
         if (destinationLevel - sourceLevel == 1) {
             draw.line(
-                sourceBBox.x + sourceRect.width(), 
-                sourceBBox.y + (sourceRect.height() / 2),
-                destBBox.x,
-                sourceBBox.y + (sourceRect.height() / 2))
-            .stroke({ color: 'black', width: 10});
+                    sourceBBox.x + sourceRect.width(), 
+                    sourceBBox.y + (sourceRect.height() / 2),
+                    destBBox.x,
+                    sourceBBox.y + (sourceRect.height() / 2))
+                .stroke({ color: 'black', width: 4})
+                .marker('end', marker);
         } else if (destinationLevel - sourceLevel > 1) {
-            // Otherwise draw arrow along the top
+            // else, draw an arrow from the top
+            draw.polyline(
+                [
+                    [sourceBBox.x + sourceBBox.width, sourceBBox.y + 4],
+                    [destBBox.x + (destBBox.width / 2), sourceBBox.y + 4],
+                    [destBBox.x + (destBBox.width / 2), destBBox.y]
+                ])
+                .fill('none')
+                .stroke({ color: 'black', width: 4 })
+                .marker('end', marker);
         } else {
             console.log("something went wrong");
         }
