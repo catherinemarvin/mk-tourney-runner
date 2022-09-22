@@ -49,36 +49,41 @@ let roundWidth = 100;
 // horizontal padding between rounds
 let widthPadding = 20;
 
+// how much to lower each successive level
+let levelLowerAmount = 50;
 
-var draw = SVG().addTo('body').size(3 * (roundWidth + widthPadding), rounds.starting_rounds.length * (roundHeight + heightPadding));
+var draw = SVG().addTo('body').size(3 * (roundWidth + widthPadding), 3 * (roundHeight + heightPadding + levelLowerAmount));
 
 
 for (var r of rounds.starting_rounds) {
     var dy = 0;
-    var rect = draw.rect(roundHeight,roundWidth).move(0, dy).attr({ fill: '#f06'})
+    var nested = draw.nested().move(0,0);
+    var rect = nested.rect(roundHeight,roundWidth).move(0, dy).attr({ fill: '#f06'})
     roundPositionToSVG[r.index] = rect;
-    drawPlayers(rect, r.players);
+    drawPlayers(nested, r.players);
     dy += roundHeight + heightPadding;
 }
 
 for (var r of rounds.intermediate_rounds) {
     var dy = 0;
-    var rect = draw.rect(roundHeight,roundWidth).move(roundWidth + widthPadding, dy).attr({ fill: 'red' });
+    var nested = draw.nested().move(roundWidth + widthPadding, dy + levelLowerAmount);
+    var rect = nested.rect(roundHeight, roundWidth).attr( { fill: 'blue'} )
     roundPositionToSVG[r.index] = rect;
-    drawPlayers(rect, r.players);
+    drawPlayers(nested, r.players);
     dy += roundHeight + heightPadding;
 }
 
-var finalRound = draw.rect(roundHeight, roundWidth).move(2 * (roundWidth + widthPadding), 0).attr({ fill: 'red' });
+var finalRound = draw.rect(roundHeight, roundWidth).move(2 * (roundWidth + widthPadding), levelLowerAmount * 2).attr({ fill: 'red' });
 roundPositionToSVG[r.index] = finalRound;
 
 
+// container: SVG container
 // Round: SVG object
 // Players: array of names
-function drawPlayers(round, players) {
+function drawPlayers(container, players) {
     var dy = 0;
     for (var p of players) {
-        draw.text(p.name).move(round.x(),dy).font({ fill: '#000' });
+        container.text(p.name).move(0,dy).font({ fill: '#000' });
         dy += 20;
     }
 }
