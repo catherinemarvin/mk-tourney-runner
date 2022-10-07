@@ -7,4 +7,10 @@ class Round < ApplicationRecord
 
     has_many :next_round_edges, foreign_key: :start_id, class_name: "RoundEdge", inverse_of: :start
     has_many :next_rounds, through: :next_round_edges, source: :end, inverse_of: :previous_rounds
+
+
+    def next_best_open_round
+        next_rounds.filter { |r| r.players.size < 4 }.max_by(&:position)
+    end
+
 end
